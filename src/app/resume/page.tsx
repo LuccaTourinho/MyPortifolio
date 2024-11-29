@@ -22,7 +22,6 @@ import {
   BiLogoSpringBoot 
 } from "react-icons/bi";
 
-import Image from 'next/image';
 import { 
   Tabs, 
   TabsContent, 
