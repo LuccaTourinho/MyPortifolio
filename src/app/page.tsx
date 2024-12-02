@@ -9,7 +9,7 @@ import { FiDownload } from "react-icons/fi";
 const Home = () => {
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = '../documents/cv.pdf';  
+    link.href = '/cv.pdf';  
     link.download = 'cv.pdf';  
     link.click();  
   };

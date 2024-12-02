@@ -22,6 +22,7 @@ import {
 import { motion } from "framer-motion";
 import { SelectGroup } from "@/components/ui/select";
 
+
 const info = [
   {
     icon: <FaPhoneAlt />,
@@ -40,7 +41,8 @@ const info = [
   },
 ]
 
-const Contact = () => {
+const Contact = () => { 
+
   return (
     <motion.section
       initial={{opacity: 0}} 
@@ -58,22 +60,44 @@ const Contact = () => {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input type="firstname" placeholder="First Name" />
-                <Input type="lastname" placeholder="Last Name" />
-                <Input type="email" placeholder="Email Address" />
-                <Input type="phone" placeholder="Phone Number" />
+                <Input 
+                  name="firstName"
+                  type="text"
+                  placeholder="First Name"
+                  
+                />
+                <Input
+                  name="lastName"
+                  type="text"
+                  placeholder="Last Name"
+                  
+                />
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="Email Address"
+                  
+                />
+                <Input
+                  name="phone"
+                  type="tel"
+                  placeholder="Phone Number"
+                  
+                />
               </div>
 
-              <Select>
+              <Select
+                
+              >
                 <SelectTrigger className="w-full ">
                   <SelectValue placeholder="Select a service" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Select a service</SelectLabel>
-                    <SelectItem value="est">Web Development</SelectItem>
-                    <SelectItem value="cst">API Development</SelectItem>
-                    <SelectItem value="mst">Optimization or Scaling</SelectItem>
+                    <SelectItem value="Web Development">Web Development</SelectItem>
+                    <SelectItem value="API Development">API Development</SelectItem>
+                    <SelectItem value="Optimization or Scaling">Optimization or Scaling</SelectItem>
                     <SelectItem value="Maintenance or Support">Maintenance or Support</SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -81,11 +105,15 @@ const Contact = () => {
 
               <Textarea 
                 className="h-[200px]"
+                name="message"
                 placeholder="Write your message here."
               />
 
-              <Button size={"md"} className="max-w-40">
-                Send Message
+              <Button
+                size="md"
+                className="max-w-40"
+              >
+                {"Send Message"}
               </Button>
             </form>
           </div>

@@ -42,7 +42,7 @@ const MobileNav = () => {
       <SheetContent side={"right"} className="flex flex-col">
         <SheetTitle className="sr-only">Mobile Navigation</SheetTitle>
 
-        <div className="mt-32 mb-40 text-center text-2xl">
+        <div className="mt-32 mb-20 text-center text-2xl">
           <Link href="/">
             <h1 className="text-4xl font-semibold">
               Lucca<span className="text-accent">.</span>
@@ -51,7 +51,7 @@ const MobileNav = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col justify-center items-center gap-8">
+        <nav className="flex flex-col justify-center items-center gap-4">
           {links.map((link, index) => {
             return (
               <Link 
