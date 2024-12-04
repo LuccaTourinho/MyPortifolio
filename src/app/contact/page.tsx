@@ -22,8 +22,26 @@ import {
 import { motion } from "framer-motion";
 import { SelectGroup } from "@/components/ui/select";
 
+import {
+  ContactSchema,
+  ContactType,
+  validateField,
+} from "../../lib/definitions";
 
-const info = [
+import { useState} from "react";
+
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+
+interface InfoValues {
+  icon: JSX.Element;
+  title: string;
+  description: string;
+}
+
+const info: InfoValues[] = [
   {
     icon: <FaPhoneAlt />,
     title: 'Phone',
@@ -41,7 +59,72 @@ const info = [
   },
 ]
 
-const Contact = () => { 
+const Contact: React.FC = () => { 
+  const [alert, setAlert] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
+
+  const {
+    register,
+    handleSubmit,
+    formState: { 
+      isSubmitting,
+    },
+    reset
+  } = useForm<ContactType>({
+    resolver: zodResolver(ContactSchema)
+  });
+
+
+  const handleValidation = (field: keyof ContactType, value: string) => {
+    try {
+      const validation = validateField(field, value); 
+  
+      if (validation.success) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          [field]: null, 
+        }));
+      } else {
+        const errorMessages = validation.error.errors.map((error) => error.message).join(" \n");
+      
+        setFieldErrors((prev) => ({
+          ...prev,
+          [field]: errorMessages,  
+        }));
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errorMessages = error.errors.map((err) => err.message).join(" \n");
+
+        setFieldErrors((prev) => ({
+          ...prev,
+          [field]: errorMessages || "Unknown error",
+        }));
+      } else {
+        console.error("Unexpected error: ", error); 
+      }
+    }
+  };
+
+  const formatErrorMessages = (errors: string) => {
+    return errors.split('\n').map((line, index) => (
+      <span key={index}>{line}<br /></span>
+    ));
+  };
+
+  const onSubmit = async (data: ContactType) => {
+    try {
+      console.log("Form submitted:", data);
+      setAlert("Message sent successfully!");
+    } catch (error) {
+      console.error('Error:', error);
+      setAlert('An error occurred while submitting the form.');
+    } finally {
+      reset();
+    }
+  };
+
+  const isFormValid = () => !Object.values(fieldErrors).some((error) => error);
 
   return (
     <motion.section
@@ -53,68 +136,82 @@ const Contact = () => {
         <div className="flex flex-col xl:flex-row gap-[30px]">
           {/* Form */}
           <div className="xl:w-[54%] order-2 xl:order-none">
-            <form className="flex flex-col gap-6 p-10 bg-sky-950 rounded-xl">
+            <form
+              onSubmit={handleSubmit(onSubmit)} 
+              className="flex flex-col gap-6 p-10 bg-sky-950 rounded-xl"
+            >
               <h3 className="text-4xl text-accent">Here is how you contact me</h3>
               <p className="text-foreground/60">
                 Interested in web development, API integration, or scaling your project? Let me know how I can assist you.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input 
-                  name="firstName"
-                  type="text"
-                  placeholder="First Name"
-                  
-                />
-                <Input
-                  name="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  
-                />
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="Email Address"
-                  
-                />
-                <Input
-                  name="phone"
-                  type="tel"
-                  placeholder="Phone Number"
-                  
-                />
+                {/* Input Fields */}
+                {['firstName', 'lastName', 'email', 'phone'].map((field) => (
+                  <div key={field} className="flex flex-col gap-1">
+                    <Input
+                      type={field === 'email' ? 'email' : 'text'}
+                      placeholder={`${field.replace(/^\w/, (c) => c.toUpperCase())}`}
+                      {...register(field as keyof ContactType)}
+                      onChange={(e) => handleValidation(field as keyof ContactType, e.target.value)}
+                    />
+                    {fieldErrors[field] && (
+                      <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors[field])}</p>
+                    )}
+                  </div>
+                ))}
               </div>
 
-              <Select
-                
-              >
-                <SelectTrigger className="w-full ">
-                  <SelectValue placeholder="Select a service" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Select a service</SelectLabel>
-                    <SelectItem value="Web Development">Web Development</SelectItem>
-                    <SelectItem value="API Development">API Development</SelectItem>
-                    <SelectItem value="Optimization or Scaling">Optimization or Scaling</SelectItem>
-                    <SelectItem value="Maintenance or Support">Maintenance or Support</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              {/* Service */}
+              <div className="flex flex-col gap-1">
+                <Select onValueChange={(value) => handleValidation("service", value)}>
+                  <SelectTrigger className="w-full ">
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select a service</SelectLabel>
+                      {['Web Development', 'API Development', 'Optimization or Scaling', 'Maintenance or Support'].map((service) => (
+                        <SelectItem key={service} value={service}>{service}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {fieldErrors.service && (
+                  <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.service)}</p>
+                )}
+              </div>
 
-              <Textarea 
-                className="h-[200px]"
-                name="message"
-                placeholder="Write your message here."
-              />
+              {/* Message */}
+              <div className="flex flex-col gap-1">
+                <Textarea 
+                  className="h-[200px]"
+                  // name="message"
+                  placeholder="Write your message here."
+                  {...register("message")}
+                  onChange={(e) => handleValidation("message", e.target.value)}
+                />
+                {fieldErrors.message && (
+                  <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.message)}</p>
+                )}
+              </div>
 
-              <Button
-                size="md"
-                className="max-w-40"
-              >
-                {"Send Message"}
-              </Button>
+              {/* Button */}
+              <div className="flex flex-col gap-1">
+                <Button
+                  size="md"
+                  className={`${(!isFormValid() && !isSubmitting) ? 'hidden' : ''} max-w-40`}
+                  disabled={!isFormValid() || isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+                {
+                  alert && (
+                    <p className="text-foreground">{alert}</p>
+                  )
+                }
+              </div>
             </form>
           </div>
             

@@ -4,7 +4,14 @@ import { BsArrowDownRight } from "react-icons/bs";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-const services = [
+interface ServiceItem {
+  num: string;
+  title: string;
+  description: string;
+  href: string;
+}
+
+const services: ServiceItem[] = [
   {
     num: "01",
     title: "Full Web Development",
@@ -32,7 +39,7 @@ const services = [
 ];
 
 
-const Services = () => {
+const Services: React.FC = () => {
   return (
       <section className="'min-h-[80vh] flex flex-col justify-center py-12 xl:py-0">
         <div className="container mx-auto">
@@ -87,4 +94,4 @@ const Services = () => {
   )
 }
 
-export default Services
+export default Services;

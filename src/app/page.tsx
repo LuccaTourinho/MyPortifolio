@@ -6,8 +6,8 @@ import Stats from "@/components/Stats";
 import { Button } from "@/components/ui/button";
 import { FiDownload } from "react-icons/fi";
 
-const Home = () => {
-  const handleDownload = () => {
+const Home: React.FC = () => {
+  const handleDownload = (): void => {
     const link = document.createElement('a');
     link.href = '/cv.pdf';  
     link.download = 'cv.pdf';  
@@ -59,5 +59,5 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;
 

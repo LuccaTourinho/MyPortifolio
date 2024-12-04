@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const Photo = () => {
+const Photo: React.FC = () => {
   return (
     <div className="w-full h-full relative">
       <motion.div 

@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-const socials = [
+interface SocialItem {
+  icon: JSX.Element;
+  path: string;
+}
+
+const socials: SocialItem[] = [
     {icon: <FaGithub />, path: "https://github.com/LuccaTourinho"},
     {icon: <FaLinkedin />, path: "https://www.linkedin.com/in/luccatourinho/"}
 ]
@@ -13,7 +18,7 @@ interface SocialProps {
     iconStyles: string;
   }
 
-const Social = ({ containerStyles, iconStyles }: SocialProps) => {
+const Social: React.FC<SocialProps> = ({ containerStyles, iconStyles }: SocialProps) => {
   return (
     <div className={containerStyles}>
       {socials.map((item, index) => { 

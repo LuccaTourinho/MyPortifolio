@@ -33,7 +33,16 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { motion } from 'framer-motion';
 import { TooltipContent, TooltipProvider, TooltipTrigger, Tooltip } from '@radix-ui/react-tooltip';
 
-const about = {
+interface AboutInfo {
+  title: string;
+  description: string;
+  info: {
+    fieldName: string;
+    fieldValue: string;
+  }[];
+}
+
+const about: AboutInfo = {
   title: "About me",
   description: `
     I am a passionate and dedicated web developer with over a year of experience. 
@@ -69,7 +78,17 @@ const about = {
   ]
 };
 
-const experience = {
+interface ExperienceInfo {
+  title: string;
+  description: string;
+  items: {
+    company: string;
+    position: string;
+    duration: string;
+  }[];
+}
+
+const experience: ExperienceInfo = {
   title: "Work Experience",
   description: `
     Throughout my career, I have gained valuable experience working as a Full Stack Developer, both as an intern and as a freelancer. 
@@ -95,7 +114,17 @@ const experience = {
   ]
 };
 
-const education = {
+interface EducationInfo {
+  title: string;
+  description: string;
+  items: {
+    institution: string;
+    course: string;
+    duration: string;
+  }[];
+}
+
+const education: EducationInfo = {
   title: "My Education",
   description: `
     My educational journey reflects my passion for technology and continuous learning. 
@@ -122,7 +151,16 @@ const education = {
   ]
 }
 
-const skills = {
+interface SkillsInfo {
+  title: string;
+  description: string;
+  items: {
+    name: string;
+    icon: JSX.Element;
+  }[];
+}
+
+const skills: SkillsInfo = {
   title: "My Skills",
   description: `
     Over the course of my journey as a developer, I have acquired a diverse set of skills spanning both front-end and back-end technologies. 
@@ -185,7 +223,7 @@ const skills = {
   ]
 };
 
-const Resume = () => {
+const Resume: React.FC = () => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -408,4 +446,4 @@ const Resume = () => {
   )
 }
 
-export default Resume
+export default Resume;

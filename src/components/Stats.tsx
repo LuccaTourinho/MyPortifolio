@@ -2,7 +2,12 @@
 
 import CountUp from "react-countup";
 
-const stats = [
+interface StatsItem {
+  num: number,
+  text: string
+}
+
+const stats: StatsItem[] = [
   {
     num: 1,
     text: "Years of Experience"
@@ -21,7 +26,7 @@ const stats = [
   }
 ]
 
-const Stats = () => {
+const Stats: React.FC = () => {
   return (
     <section className="pt-4 pb-12 xl:pt-0 xl:pb-0">
       <div className="container mx-auto ">
@@ -40,4 +45,4 @@ const Stats = () => {
   )
 }
 
-export default Stats
+export default Stats;
