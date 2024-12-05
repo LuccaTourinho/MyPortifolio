@@ -28,7 +28,7 @@ import {
   validateField,
 } from "../../lib/definitions";
 
-import { useState} from "react";
+import { useState, useEffect} from "react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,7 +57,7 @@ const info: InfoValues[] = [
     title: 'Address',
     description: '41830-590, Pituba, Salvador, Bahia, Brazil',
   },
-]
+];
 
 const Contact: React.FC = () => { 
   const [alert, setAlert] = useState<string | null>(null);
@@ -66,17 +66,39 @@ const Contact: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { 
       isSubmitting,
+      errors
     },
+    trigger,
     reset
   } = useForm<ContactType>({
     resolver: zodResolver(ContactSchema)
   });
 
+  useEffect(() => {
+    ['firstName', 'lastName', 'email', 'phone', 'service', 'message'].forEach((fieldChoosen) => {
+      handleValidation(fieldChoosen as keyof ContactType, '');
+    });
+  }, []);
+
+  useEffect(() => {
+    if (alert) {
+      const timer = setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
+
+  // useEffect(() => {
+  //   trigger();
+  // }, [trigger]);
 
   const handleValidation = (field: keyof ContactType, value: string) => {
     try {
+      setValue(field, value);
       const validation = validateField(field, value); 
   
       if (validation.success) {
@@ -113,6 +135,7 @@ const Contact: React.FC = () => {
   };
 
   const onSubmit = async (data: ContactType) => {
+    console.log(data);
     try {
       console.log("Form submitted:", data);
       setAlert("Message sent successfully!");
@@ -124,7 +147,6 @@ const Contact: React.FC = () => {
     }
   };
 
-  const isFormValid = () => !Object.values(fieldErrors).some((error) => error);
 
   return (
     <motion.section
@@ -146,20 +168,58 @@ const Contact: React.FC = () => {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Input Fields */}
-                {['firstName', 'lastName', 'email', 'phone'].map((field) => (
-                  <div key={field} className="flex flex-col gap-1">
-                    <Input
-                      type={field === 'email' ? 'email' : 'text'}
-                      placeholder={`${field.replace(/^\w/, (c) => c.toUpperCase())}`}
-                      {...register(field as keyof ContactType)}
-                      onChange={(e) => handleValidation(field as keyof ContactType, e.target.value)}
-                    />
-                    {fieldErrors[field] && (
-                      <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors[field])}</p>
-                    )}
-                  </div>
-                ))}
+                
+                {/* First Name */}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="text"
+                    placeholder="First Name"
+                    {...register('firstName')}
+                    onChange={(e) => handleValidation("firstName", e.target.value)}
+                  />
+                  {fieldErrors.firstName && (
+                    <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.firstName)}</p>
+                  )}
+                </div>
+
+                {/* Last Name */}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="text"
+                    placeholder="Last Name"
+                    {...register('lastName')}
+                    onChange={(e) => handleValidation("lastName", e.target.value)}
+                  />
+                  {fieldErrors.lastName && (
+                    <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.lastName)}</p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    {...register('email')}
+                    onChange={(e) => handleValidation("email", e.target.value)}
+                  />
+                  {fieldErrors.email && (
+                    <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.email)}</p>
+                  )}
+                </div>
+
+                {/* Phone */}
+                <div className="flex flex-col gap-1">
+                  <Input
+                    type="text"
+                    placeholder="Phone"
+                    {...register('phone')}
+                    onChange={(e) => handleValidation("phone", e.target.value)}
+                  />
+                  {fieldErrors.phone && (
+                    <p className="text-foreground text-xs">{formatErrorMessages(fieldErrors.phone)}</p>
+                  )}
+                </div>
               </div>
 
               {/* Service */}
@@ -200,17 +260,18 @@ const Contact: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <Button
                   size="md"
-                  className={`${(!isFormValid() && !isSubmitting) ? 'hidden' : ''} max-w-40`}
-                  disabled={!isFormValid() || isSubmitting}
+                  className={`max-w-40`}
+                  disabled={isSubmitting} 
                   type="submit"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
-                {
-                  alert && (
-                    <p className="text-foreground">{alert}</p>
-                  )
-                }
+                {alert && <p className="text-foreground text-xs">{alert}</p>}
+                {/* {Object.values(errors).map((error, index) => (
+                  <p key={index} className="text-foreground text-xs">
+                    {error?.message}
+                  </p>
+                ))} */}
               </div>
             </form>
           </div>

@@ -20,9 +20,8 @@ export const ContactSchema = z.object({
         .min(1, {message: "Phone number is required"})
         .regex(/^\+?\d{9,15}$/, { message: "Invalid phone number format" }),
   service: z
-        .string()
-        .trim()
-        .min(1, "Service is required"),
+      .enum(['Web Development','API Development','Optimization or Scaling','Maintenance or Support',], { message: "A service is required" })
+      .optional(),
   message: z
         .string()
         .trim()

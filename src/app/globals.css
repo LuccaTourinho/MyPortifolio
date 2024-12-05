@@ -26,3 +26,12 @@
     -webkit-text-stroke: 1px #c0111f;
   }
 }
+
+input:-webkit-autofill {
+  background-color: #a50d29 !important; /* Cor de fundo bg-accent */
+  color: #f2f2f2 !important; /* Cor do texto foreground */
+  -webkit-text-fill-color: #f2f2f2 !important; /* Impede que o texto se torne preto */
+  transition: background-color 5000s ease-in-out 0s !important; /* Impede a mudança de cor durante o preenchimento */
+}
+
+
