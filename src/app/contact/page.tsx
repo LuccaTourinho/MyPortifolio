@@ -69,9 +69,9 @@ const Contact: React.FC = () => {
     setValue,
     formState: { 
       isSubmitting,
-      errors
+      // errors
     },
-    trigger,
+    // trigger,
     reset
   } = useForm<ContactType>({
     resolver: zodResolver(ContactSchema)
